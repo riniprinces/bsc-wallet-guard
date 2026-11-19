@@ -6,6 +6,7 @@ GET  /       -> usage info
 Pure stdlib (http.server). Run: python3 server.py  [port, default 8080]
 """
 import json
+import os
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 from guard import guard
@@ -63,5 +64,12 @@ class Handler(BaseHTTPRequestHandler):
 
 if __name__ == "__main__":
     import sys
-    port = int(sys.argv[1]) if len(sys.argv) > 1 else 8080
+    # Free hosts (Render, Railway, ...) assign the port via $PORT.
+    # Precedence: explicit argv port > $PORT > 8080.
+    if len(sys.argv) > 1:
+        port = int(sys.argv[1])
+    elif os.environ.get("PORT"):
+        port = int(os.environ["PORT"])
+    else:
+        port = 8080
     ThreadingHTTPServer(("0.0.0.0", port), Handler).serve_forever()

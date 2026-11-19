@@ -1,0 +1,10 @@
+# Render free web service — deploy from this repo, no dashboard fiddling.
+# Render sets $PORT automatically; server.py reads it (fallback 8080).
+services:
+  - type: web
+    name: bsc-wallet-guard
+    env: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: python3 server.py
+    healthCheckPath: /health
